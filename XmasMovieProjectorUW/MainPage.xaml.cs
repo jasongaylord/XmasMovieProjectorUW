@@ -32,7 +32,10 @@ namespace XmasMovieProjectorUW
         public Dictionary<string, string> SongStatus;
         public DateTime FileLastChecked;
         public DateTime FileNextCheck;
-        public System.Timers.Timer Timer1;
+
+        public DispatcherTimer UiTimer;
+        //public System.Timers.Timer Timer1;
+
         public MediaPlayer mediaPlayer;
         public bool isPlaying;
        
@@ -40,15 +43,17 @@ namespace XmasMovieProjectorUW
         {
             this.InitializeComponent();
 
+            LoadConfig();
+
             mediaPlayer = new MediaPlayer
             {
                 IsLoopingEnabled = true,
-                Volume = 0
+                Volume = 0,
+                Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + ConfigValues["ActionVideo"]))
             };
-            _mediaPlayerElement.SetMediaPlayer(mediaPlayer);
             isPlaying = false;
+            _mediaPlayerElement.SetMediaPlayer(mediaPlayer);
 
-            LoadConfig();
             EnableFileWatcher();
             PlayVideo();
         }
@@ -67,8 +72,10 @@ namespace XmasMovieProjectorUW
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            Timer1.Stop();
-            Timer1.Dispose();
+            //Timer1.Stop();
+            //Timer1.Dispose();
+
+            UiTimer.Stop();
             Application.Current.Exit();
         }
 
@@ -89,19 +96,26 @@ namespace XmasMovieProjectorUW
             FileLastChecked = DateTime.Now;
             SongStatus = new Dictionary<string, string>();
 
-            Timer1 = new System.Timers.Timer();
-            Timer1.Elapsed += Timer1_Elapsed;
+            UiTimer = new DispatcherTimer();
+            UiTimer.Tick += DispatcherTimer_Tick;
+
+            //Timer1 = new System.Timers.Timer();
+            //Timer1.Elapsed += Timer1_Elapsed;
 
             CheckFile();
         }
 
-        private void Timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void DispatcherTimer_Tick(object sender, object e)
         {
-            Timer1.Stop();
+            UiTimer.Stop();
             CheckFile();
         }
 
-        //private async Task ReadStatusContents
+        //private void Timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        //{
+        //    Timer1.Stop();
+        //    CheckFile();
+        //}
 
         private void CheckFile()
         {
@@ -110,7 +124,6 @@ namespace XmasMovieProjectorUW
             var statusFile = FileIO.ReadTextAsync(file).GetAwaiter().GetResult();
 
             // Load the Status File
-            //var statusFile = File.ReadAllText(ConfigValues["StatusFile"]);
             var statusFileContents = statusFile.Split("\n");
 
             SongStatus.Clear();
@@ -126,8 +139,10 @@ namespace XmasMovieProjectorUW
 
             FileNextCheck = DateTime.Now.AddMilliseconds(interval);
 
-            Timer1.Interval = interval;
-            Timer1.Start();
+            //Timer1.Interval = interval;
+            //Timer1.Start();
+            UiTimer.Interval = new TimeSpan(0,0,0,0, interval);
+            UiTimer.Start();
 
             if (SongStatus["SequenceType"] == "2" && isPlaying)
             {
@@ -148,17 +163,15 @@ namespace XmasMovieProjectorUW
 
         private void PlayVideo()
         {
-            mediaPlayer.Pause();
-            mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + ConfigValues["ActionVideo"]));      
+            _mediaPlayerElement.Visibility = Visibility.Visible;
             mediaPlayer.Play();
             isPlaying = true;
         }
 
         private void StopVideo()
         {
+            _mediaPlayerElement.Visibility = Visibility.Collapsed;
             mediaPlayer.Pause();
-            mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + ConfigValues["PausedVideo"]));
-            mediaPlayer.Play();
             isPlaying = false;
         }
     }
