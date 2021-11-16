@@ -48,7 +48,6 @@
     <Capability Name="internetClient" />
     <Capability Name="privateNetworkClientServer"/>
     <Capability Name="internetClientServer"/>
-    <uap:Capability Name="enterpriseAuthentication"/>
 	<rescap:Capability Name="broadFileSystemAccess" />  
   </Capabilities>
 </Package>
