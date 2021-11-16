@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Background="Black">
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyoutItem x:Name="MaximizeButton" Text="Maximize" Click="MaximizeButton_Click" />
