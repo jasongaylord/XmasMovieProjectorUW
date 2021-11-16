@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
-using Windows.Storage.Search;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -32,10 +29,7 @@ namespace XmasMovieProjectorUW
         public Dictionary<string, string> SongStatus;
         public DateTime FileLastChecked;
         public DateTime FileNextCheck;
-
         public DispatcherTimer UiTimer;
-        //public System.Timers.Timer Timer1;
-
         public MediaPlayer mediaPlayer;
         public bool isPlaying;
        
@@ -72,9 +66,6 @@ namespace XmasMovieProjectorUW
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            //Timer1.Stop();
-            //Timer1.Dispose();
-
             UiTimer.Stop();
             Application.Current.Exit();
         }
@@ -99,9 +90,6 @@ namespace XmasMovieProjectorUW
             UiTimer = new DispatcherTimer();
             UiTimer.Tick += DispatcherTimer_Tick;
 
-            //Timer1 = new System.Timers.Timer();
-            //Timer1.Elapsed += Timer1_Elapsed;
-
             CheckFile();
         }
 
@@ -110,12 +98,6 @@ namespace XmasMovieProjectorUW
             UiTimer.Stop();
             CheckFile();
         }
-
-        //private void Timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        //{
-        //    Timer1.Stop();
-        //    CheckFile();
-        //}
 
         private void CheckFile()
         {
@@ -139,8 +121,6 @@ namespace XmasMovieProjectorUW
 
             FileNextCheck = DateTime.Now.AddMilliseconds(interval);
 
-            //Timer1.Interval = interval;
-            //Timer1.Start();
             UiTimer.Interval = new TimeSpan(0,0,0,0, interval);
             UiTimer.Start();
 
