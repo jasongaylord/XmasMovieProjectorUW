@@ -18,18 +18,20 @@
             </MenuFlyout>
         </Grid.ContextFlyout>
         <MediaPlayerElement x:Name="_mediaPlayerElement" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" AutoPlay="True"></MediaPlayerElement>
-        <Grid Background="#FF013A09" Height="140" Width="400" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,100,100,0" x:Name="_scoreboard">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="60" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" FontFamily="Arial Black" FontSize="28" FontWeight="Bold" Foreground="GhostWhite" Text="NEXT SHOWTIME:" Margin="0,20,0,0" />
-            <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="TextBlock" TextWrapping="Wrap" FontFamily="Press Start 2P" FontSize="30" FontWeight="Bold" Foreground="Red" x:Name="_nextShowTime" />
-            <TextBlock Grid.Row="2" HorizontalAlignment="Center" TextWrapping="Wrap" FontFamily="Candara" FontSize="16" Foreground="LightGray" Text="MyLightDisplay.com  |  @MyLightDisplay" />
+        <Grid Background="#FF013A09" Height="140" Width="400" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,70,70,0" Padding="5" x:Name="_scoreboard">
+            <Grid Background="Transparent" BorderBrush="Goldenrod" BorderThickness="2" Padding="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" FontFamily="Arial Black" FontSize="28" FontWeight="Bold" Foreground="GhostWhite" Text="NEXT SHOWTIME:" Margin="0,10,0,0" />
+                <TextBlock Grid.Row="1" HorizontalAlignment="Center" Text="TextBlock" TextWrapping="Wrap" FontFamily="Press Start 2P" FontSize="30" FontWeight="Bold" Foreground="Red" x:Name="_nextShowTime" />
+                <TextBlock Grid.Row="2" HorizontalAlignment="Center" TextWrapping="Wrap" FontFamily="Candara" FontSize="16" Foreground="LightGray" Text="MyLightDisplay.com  |  @MyLightDisplay" />
+            </Grid>
         </Grid>
     </Grid>
 </Page>
