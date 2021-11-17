@@ -17,6 +17,17 @@
                 <MenuFlyoutItem x:Name="ExitButton" Text="Exit" Click="ExitButton_Click" />
             </MenuFlyout>
         </Grid.ContextFlyout>
-        <MediaPlayerElement x:Name="_mediaPlayerElement" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" AutoPlay="True"></MediaPlayerElement>
+        <MediaPlayerElement x:Name="_mediaPlayerElement" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Black" AutoPlay="True"></MediaPlayerElement>
+        <Grid Background="#FF171717" Height="120" Width="400" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,100,100,0" x:Name="_scoreboard">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" FontFamily="Arial" FontSize="26" FontWeight="Bold" Foreground="GhostWhite" Text="NEXT SHOWTIME:" Margin="0,20,0,0" />
+            <TextBlock Grid.Row="2" HorizontalAlignment="Center" Text="TextBlock" TextWrapping="Wrap" FontFamily="Press Start 2P" FontSize="30" FontWeight="Bold" Foreground="Red" x:Name="_nextShowTime" />
+        </Grid>
     </Grid>
 </Page>
