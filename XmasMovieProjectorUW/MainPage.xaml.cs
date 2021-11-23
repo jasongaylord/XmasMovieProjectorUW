@@ -42,7 +42,7 @@ namespace XmasMovieProjectorUW
             mediaPlayer = new MediaPlayer
             {
                 IsLoopingEnabled = true,
-                Volume = 0,
+                //Volume = 0,
                 Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + ConfigValues["ActionVideo"]))
             };
             isPlaying = false;
