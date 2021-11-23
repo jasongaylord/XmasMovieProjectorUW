@@ -45,35 +45,35 @@ namespace XmasMovieProjectorUW
             mediaPlayer = new MediaPlayer
             {
                 IsLoopingEnabled = true,
-                //Volume = 0,
                 Source = MediaSource.CreateFromUri(LightsOnMedia)
             };
             isPlaying = false;
+            _scoreboard.Visibility = Visibility.Collapsed;
+            _mediaPlayerElement.Visibility = Visibility.Collapsed;
             _mediaPlayerElement.SetMediaPlayer(mediaPlayer);
 
             EnableFileWatcher();
-            PlayVideo();
         }
 
-        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        public void MaximizeButton_Click(object sender, RoutedEventArgs e)
         {
             ApplicationView view = ApplicationView.GetForCurrentView();
             _ = view.TryEnterFullScreenMode();
         }
 
-        private void NormalButton_Click(object sender, RoutedEventArgs e)
+        public void NormalButton_Click(object sender, RoutedEventArgs e)
         {
             ApplicationView view = ApplicationView.GetForCurrentView();
             _ = view.TryResizeView(new Size(1024, 768));
         }
 
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        public void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             UiTimer.Stop();
             Application.Current.Exit();
         }
 
-        private void LoadConfig()
+        public void LoadConfig()
         {
             AnimatedVideos = new List<string>();
             ConfigValues = new Dictionary<string, string>();
@@ -88,7 +88,7 @@ namespace XmasMovieProjectorUW
             AnimatedVideos = ConfigValues["AnimatedVideo"].Split(",").ToList();
         }
 
-        private void EnableFileWatcher()
+        public void EnableFileWatcher()
         {
             FileLastChecked = DateTime.Now;
             SongStatus = new Dictionary<string, string>();
@@ -99,13 +99,13 @@ namespace XmasMovieProjectorUW
             CheckFile();
         }
 
-        private void DispatcherTimer_Tick(object sender, object e)
+        public void DispatcherTimer_Tick(object sender, object e)
         {
             UiTimer.Stop();
             CheckFile();
         }
 
-        private void CheckFile()
+        public void CheckFile()
         {
             var folder = StorageFolder.GetFolderFromPathAsync(ConfigValues["StatusFolder"]).GetAwaiter().GetResult();
             var file = folder.GetFileAsync(ConfigValues["StatusFile"]).GetAwaiter().GetResult();
@@ -133,10 +133,10 @@ namespace XmasMovieProjectorUW
             if (SongStatus["SequenceType"] == "2")
             {
                 PlayAnimatedVideo(SongStatus["Song"]);
-            } else if (SongStatus["SequenceType"] == "1" && !isPlaying)
+            } else if (SongStatus["SequenceType"] == "1")
             {
                 PlayVideo();
-            } else if (SongStatus["SequenceType"] == "0" && isPlaying)
+            } else if (SongStatus["SequenceType"] == "0")
             {
                 StopVideo();
             }
@@ -144,7 +144,6 @@ namespace XmasMovieProjectorUW
             if (SongStatus["SequenceType"] == "2")
             {
                 _nextShowTime.Text = "";
-                _scoreboard.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -177,25 +176,28 @@ namespace XmasMovieProjectorUW
                 if (foundNextShow)
                 {
                     var spanUntilNextShow = nextShowtime - DateTime.Now;
-                    nextShowTimeText = spanUntilNextShow.Minutes + " Minutes";
+                    nextShowTimeText = ((int)spanUntilNextShow.TotalMinutes) + " Minutes";
                 }
 
                 _nextShowTime.Text = nextShowTimeText;
-                _scoreboard.Visibility = Visibility.Visible;
             }
         }
 
-        private void PlayVideo()
+        public void PlayVideo()
         {
             _scoreboard.Visibility = Visibility.Visible;
             _mediaPlayerElement.Visibility = Visibility.Visible;
-            _mediaPlayerElement.Source = MediaSource.CreateFromUri(LightsOnMedia);
-            mediaPlayer.IsLoopingEnabled = true;
-            mediaPlayer.Play();
-            isPlaying = true;
+
+            if (!isPlaying)
+            {
+                _mediaPlayerElement.Source = MediaSource.CreateFromUri(LightsOnMedia);
+                mediaPlayer.IsLoopingEnabled = true;
+                mediaPlayer.Play();
+                isPlaying = true;
+            }
         }
 
-        private void PlayAnimatedVideo(string song)
+        public void PlayAnimatedVideo(string song)
         {
             _scoreboard.Visibility = Visibility.Collapsed;
             mediaPlayer.IsLoopingEnabled = false;
@@ -204,7 +206,7 @@ namespace XmasMovieProjectorUW
             if (AnimatedVideos.Contains(song))
             {
                 _mediaPlayerElement.Visibility = Visibility.Visible;
-                _mediaPlayerElement.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + song));
+                _mediaPlayerElement.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + song + ".mp4"));
                 mediaPlayer.Play();
                 isPlaying = true;
             } else
@@ -215,7 +217,7 @@ namespace XmasMovieProjectorUW
             }
         }
 
-        private void StopVideo()
+        public void StopVideo()
         {
             _scoreboard.Visibility = Visibility.Collapsed;
             _mediaPlayerElement.Visibility = Visibility.Collapsed;
