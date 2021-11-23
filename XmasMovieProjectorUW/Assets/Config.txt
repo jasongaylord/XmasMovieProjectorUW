@@ -1,7 +1,6 @@
 ﻿StatusFolder|C:\My Shows\Music
 StatusFile|status.txt
-ActionVideo|GarageWorkshop.mp4
-ActionVideo2|VID00006.MP4
+ActionVideo|GarageWorkshopNoAudio.mp4
 AnimatedVideo|Wizards in Winter [Instrumental],Amazing Grace (Remixed)
 Sun|5:00 PM,5:30 PM,6:00 PM,6:30 PM,7:00 PM,7:30 PM,8:00 PM,8:30 PM,9:00 PM
 Mon|5:00 PM,5:30 PM,6:00 PM,6:30 PM,7:00 PM,7:30 PM,8:00 PM,8:30 PM,9:00 PM
