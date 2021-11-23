@@ -25,8 +25,10 @@ namespace XmasMovieProjectorUW
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public Uri LightsOnMedia;
         public Dictionary<string, string> ConfigValues;
         public Dictionary<string, string> SongStatus;
+        public List<string> AnimatedVideos;
         public DateTime FileLastChecked;
         public DateTime FileNextCheck;
         public DispatcherTimer UiTimer;
@@ -38,12 +40,13 @@ namespace XmasMovieProjectorUW
             this.InitializeComponent();
 
             LoadConfig();
+            LightsOnMedia = new Uri("ms-appx:///Assets/" + ConfigValues["ActionVideo"]);
 
             mediaPlayer = new MediaPlayer
             {
                 IsLoopingEnabled = true,
                 //Volume = 0,
-                Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + ConfigValues["ActionVideo"]))
+                Source = MediaSource.CreateFromUri(LightsOnMedia)
             };
             isPlaying = false;
             _mediaPlayerElement.SetMediaPlayer(mediaPlayer);
@@ -72,6 +75,7 @@ namespace XmasMovieProjectorUW
 
         private void LoadConfig()
         {
+            AnimatedVideos = new List<string>();
             ConfigValues = new Dictionary<string, string>();
             var config = File.ReadAllText("Assets/Config.txt");
             var configLines = config.Split("\n");
@@ -80,6 +84,8 @@ namespace XmasMovieProjectorUW
                                  let item = line.Split("|")
                                  select item)
                 ConfigValues.Add(item[0], item[1].Replace("\r", ""));
+
+            AnimatedVideos = ConfigValues["AnimatedVideo"].Split(",").ToList();
         }
 
         private void EnableFileWatcher()
@@ -124,9 +130,9 @@ namespace XmasMovieProjectorUW
             UiTimer.Interval = new TimeSpan(0,0,0,0, interval);
             UiTimer.Start();
 
-            if (SongStatus["SequenceType"] == "2" && isPlaying)
+            if (SongStatus["SequenceType"] == "2")
             {
-                StopVideo();
+                PlayAnimatedVideo(SongStatus["Song"]);
             } else if (SongStatus["SequenceType"] == "1" && !isPlaying)
             {
                 PlayVideo();
@@ -183,8 +189,30 @@ namespace XmasMovieProjectorUW
         {
             _scoreboard.Visibility = Visibility.Visible;
             _mediaPlayerElement.Visibility = Visibility.Visible;
+            _mediaPlayerElement.Source = MediaSource.CreateFromUri(LightsOnMedia);
+            mediaPlayer.IsLoopingEnabled = true;
             mediaPlayer.Play();
             isPlaying = true;
+        }
+
+        private void PlayAnimatedVideo(string song)
+        {
+            _scoreboard.Visibility = Visibility.Collapsed;
+            mediaPlayer.IsLoopingEnabled = false;
+
+            // Loop through video to get what's playing and compare it to what's in the AnimatedVideo list 
+            if (AnimatedVideos.Contains(song))
+            {
+                _mediaPlayerElement.Visibility = Visibility.Visible;
+                _mediaPlayerElement.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + song));
+                mediaPlayer.Play();
+                isPlaying = true;
+            } else
+            {
+                _mediaPlayerElement.Visibility = Visibility.Collapsed;
+                mediaPlayer.Pause();
+                isPlaying = false;
+            }
         }
 
         private void StopVideo()
