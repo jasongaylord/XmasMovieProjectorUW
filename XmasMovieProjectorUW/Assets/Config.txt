@@ -1,7 +1,7 @@
 ﻿StatusFolder|C:\My Shows\Music
 StatusFile|status.txt
 ActionVideo|GarageWorkshopNoAudio.mp4
-AnimatedVideo|Wizards in Winter [Instrumental],Amazing Grace (Remixed)
+AnimatedVideo|You're A Mean One Mr. Grinch,Wizards in Winter [Instrumental],Christmas Eve (Sarajevo)
 Sun|5:00 PM,5:30 PM,6:00 PM,6:30 PM,7:00 PM,7:30 PM,8:00 PM,8:30 PM,9:00 PM
 Mon|5:00 PM,5:30 PM,6:00 PM,6:30 PM,7:00 PM,7:30 PM,8:00 PM,8:30 PM,9:00 PM
 Tue|5:00 PM,5:30 PM,6:00 PM,6:30 PM,7:00 PM,7:30 PM,8:00 PM,8:30 PM,9:00 PM
