@@ -54,6 +54,11 @@ namespace XmasMovieProjectorUW
 
             EnableFileWatcher();
         }
+        public void OpenConfigButton_Click(object sender, RoutedEventArgs e)
+        {
+            var localFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
+            Windows.System.Launcher.LaunchFolderAsync(localFolder).GetAwaiter().GetResult();
+        }
 
         public void MaximizeButton_Click(object sender, RoutedEventArgs e)
         {
