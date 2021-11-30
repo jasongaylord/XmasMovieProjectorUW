@@ -208,44 +208,52 @@ namespace XmasMovieProjectorUW
             }
             catch (Exception ex)
             {
-                var storageFolder = ApplicationData.Current.LocalFolder;
-                var sampleFile = storageFolder.GetFileAsync("sample.txt").GetAwaiter().GetResult();
-                FileIO.WriteTextAsync(sampleFile, "Exception message: " + ex.Message).GetAwaiter().GetResult();
+                //var storageFolder = ApplicationData.Current.LocalFolder;
+                //var sampleFile = storageFolder.GetFileAsync("sample.txt").GetAwaiter().GetResult();
+                //FileIO.WriteTextAsync(sampleFile, "Exception message: " + ex.Message).GetAwaiter().GetResult();
             }
         }
 
         public void PlayVideo()
         {
-            _scoreboard.Visibility = Visibility.Visible;
-            _mediaPlayerElement.Visibility = Visibility.Visible;
-
-            if (!isPlaying)
+            try
             {
-                _mediaPlayerElement.Source = MediaSource.CreateFromUri(LightsOnMedia);
-                mediaPlayer.IsLoopingEnabled = true;
-                mediaPlayer.Play();
-                isPlaying = true;
+                _scoreboard.Visibility = Visibility.Visible;
+                _mediaPlayerElement.Visibility = Visibility.Visible;
+
+                if (!isPlaying)
+                {
+                    _mediaPlayerElement.Source = MediaSource.CreateFromUri(LightsOnMedia);
+                    mediaPlayer.IsLoopingEnabled = true;
+                    mediaPlayer.Play();
+                    isPlaying = true;
+                }
             }
+            catch (Exception ex) { }
         }
 
         public void PlayAnimatedVideo(string song)
         {
-            _scoreboard.Visibility = Visibility.Collapsed;
-            mediaPlayer.IsLoopingEnabled = false;
+            try
+            { 
+                _scoreboard.Visibility = Visibility.Collapsed;
+                mediaPlayer.IsLoopingEnabled = false;
 
-            // Loop through video to get what's playing and compare it to what's in the AnimatedVideo list 
-            if (AnimatedVideos.Contains(song))
-            {
-                _mediaPlayerElement.Visibility = Visibility.Visible;
-                _mediaPlayerElement.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + song + ".mp4"));
-                mediaPlayer.Play();
-                isPlaying = true;
-            } else
-            {
-                _mediaPlayerElement.Visibility = Visibility.Collapsed;
-                mediaPlayer.Pause();
-                isPlaying = false;
-            }
+                // Loop through video to get what's playing and compare it to what's in the AnimatedVideo list 
+                if (AnimatedVideos.Contains(song))
+                {
+                    _mediaPlayerElement.Visibility = Visibility.Visible;
+                    _mediaPlayerElement.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/" + song + ".mp4"));
+                    mediaPlayer.Play();
+                    isPlaying = true;
+                } else
+                {
+                    _mediaPlayerElement.Visibility = Visibility.Collapsed;
+                    mediaPlayer.Pause();
+                    isPlaying = false;
+                }
+            } 
+            catch (Exception ex) { }
         }
 
         public void StopVideo()
