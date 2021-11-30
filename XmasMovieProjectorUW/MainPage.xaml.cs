@@ -129,8 +129,8 @@ namespace XmasMovieProjectorUW
 
             int interval = 1000;
             //var intSuccess = int.TryParse(SongStatus["Interval"], out interval);
-            if (!intSuccess)
-                interval = 1000;
+            //if (!intSuccess)
+            //    interval = 1000;
 
             FileNextCheck = DateTime.Now.AddMilliseconds(interval);
 
