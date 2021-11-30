@@ -12,6 +12,7 @@
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyoutItem x:Name="OpenConfigButton" Text="Open Config" Click="OpenConfigButton_Click" />
+                <MenuFlyoutItem x:Name="OpenLocalFolderButton" Text="Open Local Folder" Click="OpenLocalFolderButton_Click" />
                 <MenuFlyoutSeparator></MenuFlyoutSeparator>
                 <MenuFlyoutItem x:Name="MaximizeButton" Text="Maximize" Click="MaximizeButton_Click" />
                 <MenuFlyoutItem x:Name="NormalButton" Text="Normal" Click="NormalButton_Click" />

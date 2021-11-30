@@ -62,6 +62,12 @@ namespace XmasMovieProjectorUW
             Windows.System.Launcher.LaunchFolderAsync(localFolder).GetAwaiter().GetResult();
         }
 
+        public void OpenLocalFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            var localFolder = ApplicationData.Current.LocalFolder;
+            Windows.System.Launcher.LaunchFolderAsync(localFolder).GetAwaiter().GetResult();
+        }
+
         public void MaximizeButton_Click(object sender, RoutedEventArgs e)
         {
             ApplicationView view = ApplicationView.GetForCurrentView();
@@ -114,86 +120,97 @@ namespace XmasMovieProjectorUW
 
         public void CheckFile()
         {
-            var folder = StorageFolder.GetFolderFromPathAsync(ConfigValues["StatusFolder"]).GetAwaiter().GetResult();
-            var file = folder.GetFileAsync(ConfigValues["StatusFile"]).GetAwaiter().GetResult();
-            var statusFile = FileIO.ReadTextAsync(file).GetAwaiter().GetResult();
-
-            // Load the Status File
-            var statusFileContents = statusFile.Split("\n");
-
-            SongStatus.Clear();
-            foreach (var item in from line in statusFileContents
-                                 let item = line.Split("|")
-                                 select item)
-                SongStatus.Add(item[0], item[1].Replace("\r", ""));
-
-            int interval = 1000;
-            //var intSuccess = int.TryParse(SongStatus["Interval"], out interval);
-            //if (!intSuccess)
-            //    interval = 1000;
-
-            FileNextCheck = DateTime.Now.AddMilliseconds(interval);
-
-            UiTimer.Interval = new TimeSpan(0,0,0,0, interval);
-            UiTimer.Start();
-
-            if (SongStatus["Song"] != currentSong) 
+            try
             {
-                currentSong = SongStatus["Song"];
+                var folder = StorageFolder.GetFolderFromPathAsync(ConfigValues["StatusFolder"]).GetAwaiter().GetResult();
+                var file = folder.GetFileAsync(ConfigValues["StatusFile"]).GetAwaiter().GetResult();
+                var statusFile = FileIO.ReadTextAsync(file).GetAwaiter().GetResult();
 
-                if (SongStatus["SequenceType"] == "2")
-                {
-                    PlayAnimatedVideo(SongStatus["Song"]);
-                } else if (SongStatus["SequenceType"] == "1")
-                {
-                    PlayVideo();
-                } else if (SongStatus["SequenceType"] == "0")
-                {
-                    StopVideo();
-                }
+                // Load the Status File
+                var statusFileContents = statusFile.Split("\n");
 
+                SongStatus.Clear();
+                foreach (var item in from line in statusFileContents
+                                     let item = line.Split("|")
+                                     select item)
+                    SongStatus.Add(item[0], item[1].Replace("\r", ""));
 
-                if (SongStatus["SequenceType"] == "2")
-                {
-                    _nextShowTime.Text = "";
-                }
-                else
-                {
-                    // Load current day showtimes
-                    var currentDay = FileLastChecked.ToString("ddd");
-                    var showtimeSetting = ConfigValues[currentDay];
-                    var showtimes = showtimeSetting.Split(",");
+                int interval = 1000;
+                //var intSuccess = int.TryParse(SongStatus["Interval"], out interval);
+                //if (!intSuccess)
+                //    interval = 1000;
 
-                    // Iterate through showtimes to find the next showtime
-                    var currentTimeTicks = DateTime.Now.Ticks;
-                    var currentDate = DateTime.Now.ToShortDateString();
-                    var nextShowtime = new DateTime();
-                    var foundNextShow = false;
-                    foreach (var showtime in showtimes)
+                FileNextCheck = DateTime.Now.AddMilliseconds(interval);
+
+                UiTimer.Interval = new TimeSpan(0, 0, 0, 0, interval);
+                UiTimer.Start();
+
+                if (SongStatus["Song"] != currentSong)
+                {
+                    currentSong = SongStatus["Song"];
+
+                    if (SongStatus["SequenceType"] == "2")
                     {
-                        var showtimeDate = DateTime.Parse(currentDate + " " + showtime);
-                        if (showtimeDate.Ticks > currentTimeTicks)
+                        PlayAnimatedVideo(SongStatus["Song"]);
+                    }
+                    else if (SongStatus["SequenceType"] == "1")
+                    {
+                        PlayVideo();
+                    }
+                    else if (SongStatus["SequenceType"] == "0")
+                    {
+                        StopVideo();
+                    }
+
+
+                    if (SongStatus["SequenceType"] == "2")
+                    {
+                        _nextShowTime.Text = "";
+                    }
+                    else
+                    {
+                        // Load current day showtimes
+                        var currentDay = FileLastChecked.ToString("ddd");
+                        var showtimeSetting = ConfigValues[currentDay];
+                        var showtimes = showtimeSetting.Split(",");
+
+                        // Iterate through showtimes to find the next showtime
+                        var currentTimeTicks = DateTime.Now.Ticks;
+                        var currentDate = DateTime.Now.ToShortDateString();
+                        var nextShowtime = new DateTime();
+                        var foundNextShow = false;
+                        foreach (var showtime in showtimes)
                         {
-                            nextShowtime = showtimeDate;
-                            foundNextShow = true;
+                            var showtimeDate = DateTime.Parse(currentDate + " " + showtime);
+                            if (showtimeDate.Ticks > currentTimeTicks)
+                            {
+                                nextShowtime = showtimeDate;
+                                foundNextShow = true;
+                            }
+
+                            if (foundNextShow)
+                                break;
                         }
 
+                        // Set the Next ShowTime Text
+                        var nextShowTimeText = "Tomorrow";
+
                         if (foundNextShow)
-                            break;
+                        {
+                            var spanUntilNextShow = nextShowtime - DateTime.Now;
+                            var minutesLeft = (int)spanUntilNextShow.TotalMinutes;
+                            nextShowTimeText = minutesLeft == 0 ? "Up Next" : minutesLeft + " Minutes";
+                        }
+
+                        _nextShowTime.Text = nextShowTimeText;
                     }
-
-                    // Set the Next ShowTime Text
-                    var nextShowTimeText = "Tomorrow";
-
-                    if (foundNextShow)
-                    {
-                        var spanUntilNextShow = nextShowtime - DateTime.Now;
-                        var minutesLeft = (int)spanUntilNextShow.TotalMinutes;
-                        nextShowTimeText = minutesLeft == 0 ? "Up Next" : minutesLeft + " Minutes";
-                    }
-
-                    _nextShowTime.Text = nextShowTimeText;
                 }
+            }
+            catch (Exception ex)
+            {
+                var storageFolder = ApplicationData.Current.LocalFolder;
+                var sampleFile = storageFolder.GetFileAsync("sample.txt").GetAwaiter().GetResult();
+                FileIO.WriteTextAsync(sampleFile, "Exception message: " + ex.Message).GetAwaiter().GetResult();
             }
         }
 
