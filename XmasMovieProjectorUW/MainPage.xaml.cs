@@ -34,6 +34,8 @@ namespace XmasMovieProjectorUW
         public DispatcherTimer UiTimer;
         public MediaPlayer mediaPlayer;
         public bool isPlaying;
+        public string debugInfo;
+        public string currentSong;
        
         public MainPage()
         {
@@ -125,66 +127,73 @@ namespace XmasMovieProjectorUW
                                  select item)
                 SongStatus.Add(item[0], item[1].Replace("\r", ""));
 
-            int interval = 10000;
-            var intSuccess = int.TryParse(SongStatus["Interval"], out interval);
+            int interval = 1000;
+            //var intSuccess = int.TryParse(SongStatus["Interval"], out interval);
             if (!intSuccess)
-                interval = 10000;
+                interval = 1000;
 
             FileNextCheck = DateTime.Now.AddMilliseconds(interval);
 
             UiTimer.Interval = new TimeSpan(0,0,0,0, interval);
             UiTimer.Start();
 
-            if (SongStatus["SequenceType"] == "2")
+            if (SongStatus["Song"] != currentSong) 
             {
-                PlayAnimatedVideo(SongStatus["Song"]);
-            } else if (SongStatus["SequenceType"] == "1")
-            {
-                PlayVideo();
-            } else if (SongStatus["SequenceType"] == "0")
-            {
-                StopVideo();
-            }
+                currentSong = SongStatus["Song"];
 
-            if (SongStatus["SequenceType"] == "2")
-            {
-                _nextShowTime.Text = "";
-            }
-            else
-            {
-                // Load current day showtimes
-                var currentDay = FileLastChecked.ToString("ddd");
-                var showtimeSetting = ConfigValues[currentDay];
-                var showtimes = showtimeSetting.Split(",");
-
-                // Iterate through showtimes to find the next showtime
-                var currentTimeTicks = DateTime.Now.Ticks;
-                var currentDate = DateTime.Now.ToShortDateString();
-                var nextShowtime = new DateTime();
-                var foundNextShow = false;
-                foreach (var showtime in showtimes)
+                if (SongStatus["SequenceType"] == "2")
                 {
-                    var showtimeDate = DateTime.Parse(currentDate + " " + showtime);
-                    if (showtimeDate.Ticks > currentTimeTicks)
+                    PlayAnimatedVideo(SongStatus["Song"]);
+                } else if (SongStatus["SequenceType"] == "1")
+                {
+                    PlayVideo();
+                } else if (SongStatus["SequenceType"] == "0")
+                {
+                    StopVideo();
+                }
+
+
+                if (SongStatus["SequenceType"] == "2")
+                {
+                    _nextShowTime.Text = "";
+                }
+                else
+                {
+                    // Load current day showtimes
+                    var currentDay = FileLastChecked.ToString("ddd");
+                    var showtimeSetting = ConfigValues[currentDay];
+                    var showtimes = showtimeSetting.Split(",");
+
+                    // Iterate through showtimes to find the next showtime
+                    var currentTimeTicks = DateTime.Now.Ticks;
+                    var currentDate = DateTime.Now.ToShortDateString();
+                    var nextShowtime = new DateTime();
+                    var foundNextShow = false;
+                    foreach (var showtime in showtimes)
                     {
-                        nextShowtime = showtimeDate;
-                        foundNextShow = true;
+                        var showtimeDate = DateTime.Parse(currentDate + " " + showtime);
+                        if (showtimeDate.Ticks > currentTimeTicks)
+                        {
+                            nextShowtime = showtimeDate;
+                            foundNextShow = true;
+                        }
+
+                        if (foundNextShow)
+                            break;
                     }
 
+                    // Set the Next ShowTime Text
+                    var nextShowTimeText = "Tomorrow";
+
                     if (foundNextShow)
-                        break;
+                    {
+                        var spanUntilNextShow = nextShowtime - DateTime.Now;
+                        var minutesLeft = (int)spanUntilNextShow.TotalMinutes;
+                        nextShowTimeText = minutesLeft == 0 ? "Up Next" : minutesLeft + " Minutes";
+                    }
+
+                    _nextShowTime.Text = nextShowTimeText;
                 }
-
-                // Set the Next ShowTime Text
-                var nextShowTimeText = "Tomorrow";
-
-                if (foundNextShow)
-                {
-                    var spanUntilNextShow = nextShowtime - DateTime.Now;
-                    nextShowTimeText = ((int)spanUntilNextShow.TotalMinutes) + " Minutes";
-                }
-
-                _nextShowTime.Text = nextShowTimeText;
             }
         }
 
