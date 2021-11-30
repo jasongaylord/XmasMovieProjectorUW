@@ -208,9 +208,10 @@ namespace XmasMovieProjectorUW
             }
             catch (Exception ex)
             {
-                //var storageFolder = ApplicationData.Current.LocalFolder;
-                //var sampleFile = storageFolder.GetFileAsync("sample.txt").GetAwaiter().GetResult();
-                //FileIO.WriteTextAsync(sampleFile, "Exception message: " + ex.Message).GetAwaiter().GetResult();
+                int interval = 1000;
+                FileNextCheck = DateTime.Now.AddMilliseconds(interval);
+                UiTimer.Interval = new TimeSpan(0, 0, 0, 0, interval);
+                UiTimer.Start();
             }
         }
 
