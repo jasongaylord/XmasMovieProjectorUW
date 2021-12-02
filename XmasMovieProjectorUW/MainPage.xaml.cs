@@ -34,6 +34,7 @@ namespace XmasMovieProjectorUW
         public DispatcherTimer UiTimer;
         public MediaPlayer mediaPlayer;
         public bool isPlaying;
+        public bool isUpNext;
         public string debugInfo;
         public string currentSong;
        
@@ -166,6 +167,7 @@ namespace XmasMovieProjectorUW
                     if (SongStatus["SequenceType"] == "2")
                     {
                         _nextShowTime.Text = "";
+                        isUpNext = false;
                     }
                     else
                     {
@@ -199,7 +201,13 @@ namespace XmasMovieProjectorUW
                         {
                             var spanUntilNextShow = nextShowtime - DateTime.Now;
                             var minutesLeft = (int)spanUntilNextShow.TotalMinutes;
-                            nextShowTimeText = minutesLeft == 0 ? "Up Next" : minutesLeft + " Minutes";
+                            
+                            if (!isUpNext)
+                            {
+                                isUpNext = (minutesLeft <= 1);
+                            }
+
+                            nextShowTimeText = isUpNext ? "Up Next" : minutesLeft + " Minutes";
                         }
 
                         _nextShowTime.Text = nextShowTimeText;
