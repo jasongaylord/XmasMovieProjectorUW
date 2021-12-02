@@ -31,12 +31,15 @@ namespace XmasMovieProjectorUW
         public List<string> AnimatedVideos;
         public DateTime FileLastChecked;
         public DateTime FileNextCheck;
+        public DateTime nextShowtime;
         public DispatcherTimer UiTimer;
         public MediaPlayer mediaPlayer;
         public bool isPlaying;
         public bool isUpNext;
+        public bool foundNextShow;
         public string debugInfo;
         public string currentSong;
+        public string nextShowTimeText; 
        
         public MainPage()
         {
@@ -91,6 +94,9 @@ namespace XmasMovieProjectorUW
         {
             AnimatedVideos = new List<string>();
             ConfigValues = new Dictionary<string, string>();
+            nextShowtime = new DateTime();
+            foundNextShow = false;
+
             var config = File.ReadAllText("Assets/Config.txt");
             var configLines = config.Split("\n");
 
@@ -179,8 +185,8 @@ namespace XmasMovieProjectorUW
                         // Iterate through showtimes to find the next showtime
                         var currentTimeTicks = DateTime.Now.Ticks;
                         var currentDate = DateTime.Now.ToShortDateString();
-                        var nextShowtime = new DateTime();
-                        var foundNextShow = false;
+                        //nextShowtime = new DateTime();
+                        foundNextShow = false;
                         foreach (var showtime in showtimes)
                         {
                             var showtimeDate = DateTime.Parse(currentDate + " " + showtime);
@@ -193,26 +199,26 @@ namespace XmasMovieProjectorUW
                             if (foundNextShow)
                                 break;
                         }
-
-                        // Set the Next ShowTime Text
-                        var nextShowTimeText = "Tomorrow";
-
-                        if (foundNextShow)
-                        {
-                            var spanUntilNextShow = nextShowtime - DateTime.Now;
-                            var minutesLeft = (int)spanUntilNextShow.TotalMinutes;
-                            
-                            if (!isUpNext)
-                            {
-                                isUpNext = (minutesLeft <= 1);
-                            }
-
-                            nextShowTimeText = isUpNext ? "Up Next" : minutesLeft + " Minutes";
-                        }
-
-                        _nextShowTime.Text = nextShowTimeText;
                     }
                 }
+
+                // Set the Next ShowTime Text
+                nextShowTimeText = "Tomorrow";
+
+                if (foundNextShow)
+                {
+                    var spanUntilNextShow = nextShowtime - DateTime.Now;
+                    var minutesLeft = (int)spanUntilNextShow.TotalMinutes;
+
+                    if (!isUpNext)
+                    {
+                        isUpNext = (minutesLeft <= 1);
+                    }
+
+                    nextShowTimeText = isUpNext ? "Up Next" : minutesLeft + " Minutes";
+                }
+
+                _nextShowTime.Text = nextShowTimeText;
             }
             catch (Exception ex)
             {
