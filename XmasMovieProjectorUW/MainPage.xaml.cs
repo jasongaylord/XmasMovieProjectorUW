@@ -159,6 +159,7 @@ namespace XmasMovieProjectorUW
                     if (SongStatus["SequenceType"] == "2")
                     {
                         PlayAnimatedVideo(SongStatus["Song"]);
+                        isUpNext = false;
                     }
                     else if (SongStatus["SequenceType"] == "1")
                     {
@@ -167,13 +168,13 @@ namespace XmasMovieProjectorUW
                     else if (SongStatus["SequenceType"] == "0")
                     {
                         StopVideo();
+                        isUpNext = false;
                     }
 
 
                     if (SongStatus["SequenceType"] == "2")
                     {
                         _nextShowTime.Text = "";
-                        isUpNext = false;
                     }
                     else
                     {
@@ -185,7 +186,7 @@ namespace XmasMovieProjectorUW
                         // Iterate through showtimes to find the next showtime
                         var currentTimeTicks = DateTime.Now.Ticks;
                         var currentDate = DateTime.Now.ToShortDateString();
-                        //nextShowtime = new DateTime();
+
                         foundNextShow = false;
                         foreach (var showtime in showtimes)
                         {
@@ -205,8 +206,8 @@ namespace XmasMovieProjectorUW
                 // Set the Next ShowTime Text
                 nextShowTimeText = "Tomorrow";
 
-                if (foundNextShow)
-                {
+                //if (foundNextShow)
+                //{
                     var spanUntilNextShow = nextShowtime - DateTime.Now;
                     var minutesLeft = (int)spanUntilNextShow.TotalMinutes;
 
@@ -216,7 +217,7 @@ namespace XmasMovieProjectorUW
                     }
 
                     nextShowTimeText = isUpNext ? "Up Next" : minutesLeft + " Minutes";
-                }
+                //}
 
                 _nextShowTime.Text = nextShowTimeText;
             }
