@@ -203,7 +203,7 @@ namespace XmasMovieProjectorUW
                     }
                 }
 
-                if (CurrentDate == nextShowtime.Date)
+                if (CurrentDate == nextShowtime.Date && foundNextShow)
                 { 
                     var spanUntilNextShow = nextShowtime - DateTime.Now;
                     var minutesLeft = (int)spanUntilNextShow.TotalMinutes;
